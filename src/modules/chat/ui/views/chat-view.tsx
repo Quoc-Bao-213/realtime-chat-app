@@ -72,7 +72,7 @@ export function ChatView() {
   if (!activeConversation) return null;
 
   return (
-    <section className="relative min-h-screen overflow-hidden p-3 transition-all duration-200 sm:p-4">
+    <section className="relative h-full overflow-hidden p-3 transition-all duration-200 sm:p-4">
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-secondary/42 via-background to-muted/30 dark:from-slate-800/35 dark:via-slate-900/70 dark:to-slate-950/82" />
         <div className="absolute left-[22%] top-[6%] h-[28rem] w-[28rem] rounded-full bg-indigo-300/12 blur-3xl dark:bg-indigo-500/10" />
@@ -80,7 +80,7 @@ export function ChatView() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_22%_12%,rgba(148,163,184,0.15),transparent_52%)] dark:bg-[radial-gradient(circle_at_22%_12%,rgba(99,102,241,0.09),transparent_55%)]" />
       </div>
 
-      <div className="mx-auto flex h-[calc(100vh-1.5rem)] max-w-7xl overflow-hidden rounded-3xl border border-border/70 bg-card/46 shadow-lg shadow-slate-300/28 ring-1 ring-white/20 backdrop-blur-xl dark:bg-slate-900/50 dark:shadow-slate-950/40 dark:ring-slate-700/35 sm:h-[calc(100vh-2rem)]">
+      <div className="mx-auto flex h-full max-w-7xl overflow-hidden rounded-3xl border border-border/70 bg-card/46 shadow-lg shadow-slate-300/28 ring-1 ring-white/20 backdrop-blur-xl dark:bg-slate-900/50 dark:shadow-slate-950/40 dark:ring-slate-700/35">
         <div className="hidden w-80 shrink-0 md:block">
           <ChatSidebar
             conversations={conversations}

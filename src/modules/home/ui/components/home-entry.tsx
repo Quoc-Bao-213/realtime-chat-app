@@ -1,10 +1,17 @@
 import Link from "next/link";
 import { MessageCircle } from "lucide-react";
+import { auth } from "@clerk/nextjs/server";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { BRAND_NAME, HERO_CONTENT } from "@/modules/home/ui/home-content";
 
-export const HomeEntry = () => {
+export const HomeEntry = async () => {
+  const { userId } = await auth();
+  const isSignedIn = Boolean(userId);
+
+  const primaryHref = isSignedIn ? "/chat" : "/sign-up";
+  const primaryLabel = "Start Chatting";
+
   return (
     <section className="relative flex min-h-screen items-center justify-center px-4 py-12 sm:px-6">
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
@@ -39,19 +46,20 @@ export const HomeEntry = () => {
             size="lg"
             className="flex-1 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 text-white shadow-md transition-all duration-200 hover:brightness-105 hover:shadow-lg dark:from-indigo-500 dark:to-cyan-500"
           >
-            <Link href={HERO_CONTENT.primaryCta.href}>{HERO_CONTENT.primaryCta.label}</Link>
+            <Link href={primaryHref}>{primaryLabel}</Link>
           </Button>
-          <Button
-            asChild
-            variant="outline"
-            size="lg"
-            className="flex-1 rounded-xl border-indigo-100 bg-white/70 text-slate-700 transition-all duration-200 hover:bg-indigo-50 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-200 dark:hover:bg-slate-800"
-          >
-            <Link href={HERO_CONTENT.secondaryCta.href}>{HERO_CONTENT.secondaryCta.label}</Link>
-          </Button>
+          {!isSignedIn ? (
+            <Button
+              asChild
+              variant="outline"
+              size="lg"
+              className="flex-1 rounded-xl border-indigo-100 bg-white/70 text-slate-700 transition-all duration-200 hover:bg-indigo-50 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-200 dark:hover:bg-slate-800"
+            >
+              <Link href="/sign-in">{HERO_CONTENT.secondaryCta.label}</Link>
+            </Button>
+          ) : null}
         </div>
       </div>
     </section>
   );
 };
-
