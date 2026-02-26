@@ -1,4 +1,5 @@
 import { AppHeader } from "@/modules/chat/ui/components/app-header";
+import { ChatProvider } from "@/modules/chat/ui/chat-context";
 
 interface ChatLayoutProps {
   children: React.ReactNode;
@@ -6,10 +7,11 @@ interface ChatLayoutProps {
 
 export default function ChatLayout({ children }: ChatLayoutProps) {
   return (
-    <div className="flex h-screen flex-col overflow-hidden">
-      <AppHeader />
-      <main className="min-h-0 flex-1">{children}</main>
-    </div>
+    <ChatProvider>
+      <div className="flex h-screen flex-col overflow-hidden">
+        <AppHeader />
+        <main className="min-h-0 flex-1">{children}</main>
+      </div>
+    </ChatProvider>
   );
 }
-

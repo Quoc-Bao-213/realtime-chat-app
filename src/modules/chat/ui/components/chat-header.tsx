@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import type { Conversation } from "@/modules/chat/ui/types";
 
 interface ChatHeaderProps {
-  conversation: Conversation;
+  conversation: Omit<Conversation, "messages">;
 }
 
 export function ChatHeader({ conversation }: ChatHeaderProps) {

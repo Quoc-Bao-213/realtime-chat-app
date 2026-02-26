@@ -6,9 +6,10 @@ import type { ChatMessage } from "@/modules/chat/ui/types";
 
 interface MessageListProps {
   messages: ChatMessage[];
+  currentUserId: string;
 }
 
-export function MessageList({ messages }: MessageListProps) {
+export function MessageList({ messages, currentUserId }: MessageListProps) {
   const endRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -19,7 +20,7 @@ export function MessageList({ messages }: MessageListProps) {
     <div className="flex-1 overflow-y-auto bg-background/28 px-4 py-5 sm:px-6 dark:bg-slate-900/20">
       <div className="space-y-4">
         {messages.map((message) => {
-          const isMine = message.senderId === "me";
+          const isMine = message.senderId === currentUserId;
 
           return (
             <div
@@ -43,7 +44,10 @@ export function MessageList({ messages }: MessageListProps) {
                       : "text-slate-500 dark:text-slate-400"
                   )}
                 >
-                  {message.timestamp}
+                  {new Date(message.createdAt).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
                 </p>
               </div>
             </div>

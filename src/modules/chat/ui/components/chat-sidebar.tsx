@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import type { Conversation } from "@/modules/chat/ui/types";
 
 interface ChatSidebarProps {
-  conversations: Conversation[];
+  conversations: Array<Omit<Conversation, "messages">>;
   activeConversationId: string;
   onSelectConversation: (conversationId: string) => void;
 }

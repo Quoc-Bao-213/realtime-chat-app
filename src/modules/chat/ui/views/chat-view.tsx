@@ -1,6 +1,5 @@
 "use client";
 
-import { useMemo, useState } from "react";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,60 +13,23 @@ import { ChatHeader } from "@/modules/chat/ui/components/chat-header";
 import { ChatSidebar } from "@/modules/chat/ui/components/chat-sidebar";
 import { MessageInput } from "@/modules/chat/ui/components/message-input";
 import { MessageList } from "@/modules/chat/ui/components/message-list";
-import { MOCK_CONVERSATIONS } from "@/modules/chat/ui/mock-data";
-import type { Conversation } from "@/modules/chat/ui/types";
-
-type ConversationsById = Record<string, Conversation>;
-
-const conversationsById: ConversationsById = MOCK_CONVERSATIONS.reduce(
-  (acc, conversation) => {
-    acc[conversation.id] = conversation;
-    return acc;
-  },
-  {} as ConversationsById
-);
-
-const getCurrentTime = () =>
-  new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+import { useChatContext } from "@/modules/chat/ui/chat-context";
 
 export function ChatView() {
-  const [activeConversationId, setActiveConversationId] = useState(
-    MOCK_CONVERSATIONS[0]?.id ?? ""
+  const {
+    conversations,
+    activeConversationId,
+    activeMessages,
+    draft,
+    setDraft,
+    setActiveConversationId,
+    sendMessage,
+    currentUserId,
+  } = useChatContext();
+
+  const activeConversation = conversations.find(
+    (conversation) => conversation.id === activeConversationId,
   );
-  const [draft, setDraft] = useState("");
-  const [conversations, setConversations] = useState(MOCK_CONVERSATIONS);
-
-  const activeConversation = useMemo(
-    () =>
-      conversations.find((conversation) => conversation.id === activeConversationId) ??
-      conversationsById[activeConversationId],
-    [activeConversationId, conversations]
-  );
-
-  const handleSendMessage = () => {
-    const trimmed = draft.trim();
-    if (!trimmed || !activeConversation) return;
-
-    const newMessage = {
-      id: `m-${Date.now()}`,
-      senderId: "me" as const,
-      content: trimmed,
-      timestamp: getCurrentTime(),
-    };
-
-    setConversations((prev) =>
-      prev.map((conversation) => {
-        if (conversation.id !== activeConversation.id) return conversation;
-        return {
-          ...conversation,
-          messages: [...conversation.messages, newMessage],
-          lastMessage: newMessage.content,
-          lastMessageAt: "Now",
-        };
-      })
-    );
-    setDraft("");
-  };
 
   if (!activeConversation) return null;
 
@@ -118,8 +80,8 @@ export function ChatView() {
           </div>
 
           <ChatHeader conversation={activeConversation} />
-          <MessageList messages={activeConversation.messages} />
-          <MessageInput value={draft} onChange={setDraft} onSend={handleSendMessage} />
+          <MessageList messages={activeMessages} currentUserId={currentUserId} />
+          <MessageInput value={draft} onChange={setDraft} onSend={sendMessage} />
         </div>
       </div>
     </section>

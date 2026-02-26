@@ -12,11 +12,18 @@ export async function POST(req: NextRequest) {
 
     if (eventType === "user.created") {
       const { data } = evt;
+      const primaryEmail =
+        data.email_addresses?.find(
+          (email) => email.id === data.primary_email_address_id,
+        )?.email_address ??
+        data.email_addresses?.[0]?.email_address ??
+        `${data.id}@clerk.local`;
 
       await db.insert(users).values({
         clerkId: data.id,
-        name: `${data.first_name} ${data.last_name}`,
+        name: `${data.first_name ?? ""} ${data.last_name ?? ""}`.trim() || "User",
         imageUrl: data.image_url,
+        email: primaryEmail,
       });
     }
 
@@ -41,11 +48,19 @@ export async function POST(req: NextRequest) {
         });
       }
 
+      const primaryEmail =
+        data.email_addresses?.find(
+          (email) => email.id === data.primary_email_address_id,
+        )?.email_address ??
+        data.email_addresses?.[0]?.email_address ??
+        `${data.id}@clerk.local`;
+
       await db
         .update(users)
         .set({
-          name: `${data.first_name} ${data.last_name}`,
+          name: `${data.first_name ?? ""} ${data.last_name ?? ""}`.trim() || "User",
           imageUrl: data.image_url,
+          email: primaryEmail,
         })
         .where(eq(users.clerkId, data.id));
     }
