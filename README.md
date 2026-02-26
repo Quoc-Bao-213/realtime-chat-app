@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Realtime Chat App
 
-## Getting Started
+Realtime chat application built with Next.js App Router, Clerk auth, Socket.IO, PostgreSQL (Drizzle), and Upstash Redis presence.
 
-First, run the development server:
+## Features
+
+- Clerk-authenticated chat
+- Direct conversation creation/reuse (`direct_key` dedup)
+- Realtime messaging (Socket.IO)
+- Realtime online/offline presence (Redis TTL + heartbeat)
+- Header user search (partial match, excludes current user)
+- URL-based chat routes (`/chat/[conversationId]`)
+
+## Tech Stack
+
+- Next.js 16
+- Socket.IO `^4.8.3`
+- Clerk
+- Drizzle ORM + PostgreSQL (Neon HTTP driver)
+- Upstash Redis
+
+## Installation
+
+1. Clone the repo.
+2. Install dependencies:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+bun install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Environment Variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Create `.env.local` with:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+DATABASE_URL=
+CLERK_SECRET_KEY=
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+UPSTASH_REDIS_REST_URL=
+UPSTASH_REDIS_REST_TOKEN=
+CLERK_WEBHOOK_SIGNING_SECRET=
+```
 
-## Learn More
+## Run the App
 
-To learn more about Next.js, take a look at the following resources:
+Development:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+bun run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Production:
 
-## Deploy on Vercel
+```bash
+bun run build
+bun run start
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+App URL:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `http://localhost:3000`
+
+## How to Use
+
+1. Sign in with Clerk.
+2. Open `/chat`.
+3. Use the header search to find a user.
+4. Click a user to create or reuse a direct conversation.
+5. Chat in realtime. Selected chats use `/chat/[conversationId]`.
