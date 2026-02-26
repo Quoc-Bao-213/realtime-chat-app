@@ -34,6 +34,7 @@ type ChatContextValue = {
   draft: string;
   setDraft: (value: string) => void;
   setActiveConversationId: (value: string) => void;
+  removeActiveConversation: () => Promise<void>;
   sendMessage: () => void;
   searchUsers: (query: string) => Promise<SearchUser[]>;
   openConversationWithUser: (targetUserId: string) => Promise<void>;
@@ -267,6 +268,25 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       },
     );
 
+    socket.on(
+      "conversation_deleted",
+      ({ conversationId }: { conversationId: string }) => {
+        setConversations((prev) => {
+          return prev.filter(
+            (conversation) => conversation.id !== conversationId,
+          );
+        });
+
+        if (activeConversationRef.current !== conversationId) {
+          return;
+        }
+
+        activeConversationRef.current = "";
+        setActiveConversationId("");
+        router.push("/chat");
+      },
+    );
+
     const heartbeatInterval = window.setInterval(() => {
       socket.emit("heartbeat");
     }, 30_000);
@@ -274,7 +294,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     socket.on("disconnect", () => {
       window.clearInterval(heartbeatInterval);
     });
-  }, []);
+  }, [fetchMessages, router]);
 
   useEffect(() => {
     void fetch("/api/chat/me", { method: "GET", cache: "no-store" })
@@ -349,6 +369,21 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     );
   }, [draft]);
 
+  const removeActiveConversation = useCallback(async () => {
+    const conversationId = activeConversationRef.current;
+    if (!conversationId) {
+      return;
+    }
+
+    const response = await fetch(`/api/chat/conversations/${conversationId}`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      return;
+    }
+  }, []);
+
   const searchUsers = useCallback(async (query: string) => {
     const trimmed = query.trim();
     if (trimmed.length < 2) {
@@ -410,6 +445,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       draft,
       setDraft,
       setActiveConversationId: selectConversation,
+      removeActiveConversation,
       sendMessage,
       searchUsers,
       openConversationWithUser,
@@ -420,6 +456,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       conversations,
       draft,
       stableActiveConversationId,
+      removeActiveConversation,
       openConversationWithUser,
       searchUsers,
       selectConversation,

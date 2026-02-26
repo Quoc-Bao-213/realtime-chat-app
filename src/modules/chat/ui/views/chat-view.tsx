@@ -23,6 +23,7 @@ export function ChatView() {
     draft,
     setDraft,
     setActiveConversationId,
+    removeActiveConversation,
     sendMessage,
     currentUserId,
   } = useChatContext();
@@ -79,7 +80,12 @@ export function ChatView() {
 
           {activeConversation ? (
             <>
-              <ChatHeader conversation={activeConversation} />
+              <ChatHeader
+                conversation={activeConversation}
+                onDeleteConversation={() => {
+                  void removeActiveConversation();
+                }}
+              />
               <MessageList
                 messages={activeMessages}
                 currentUserId={currentUserId}
