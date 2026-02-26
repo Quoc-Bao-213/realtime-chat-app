@@ -29,7 +29,7 @@ export function MessageInput({ value, onChange, onSend }: MessageInputProps) {
         <Button
           type="submit"
           size="icon"
-          className="size-11 rounded-full bg-gradient-to-r from-indigo-500/88 to-cyan-500/88 text-white shadow-sm transition-all duration-200 hover:brightness-105 hover:shadow-md"
+          className="size-11 rounded-full bg-linear-to-r from-indigo-500/88 to-cyan-500/88 text-white shadow-sm transition-all duration-200 hover:brightness-105 hover:shadow-md"
           aria-label="Send message"
         >
           <SendHorizontal className="size-4" />
