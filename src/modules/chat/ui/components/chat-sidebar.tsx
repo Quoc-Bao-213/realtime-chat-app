@@ -31,26 +31,30 @@ export function ChatSidebar({
                 "flex w-full items-center gap-3 rounded-2xl px-3 py-2.5 text-left transition-all duration-200",
                 isActive
                   ? "bg-indigo-100/55 text-foreground shadow-sm ring-1 ring-indigo-300/30 dark:bg-indigo-900/30 dark:ring-indigo-500/25"
-                  : "text-foreground/90 hover:bg-accent/70 hover:shadow-xs"
+                  : "text-foreground/90 hover:bg-accent/70 hover:shadow-xs",
               )}
             >
               <div className="relative">
                 <Avatar size="lg">
-                  <AvatarFallback className="bg-gradient-to-br from-indigo-100 to-cyan-100 text-slate-700 dark:from-indigo-900/60 dark:to-cyan-900/50 dark:text-slate-200">
+                  <AvatarFallback className="bg-linear-to-br from-indigo-100 to-cyan-100 text-slate-700 dark:from-indigo-900/60 dark:to-cyan-900/50 dark:text-slate-200">
                     {conversation.avatar}
                   </AvatarFallback>
                 </Avatar>
                 <span
                   className={cn(
                     "absolute bottom-0 right-0 size-3 rounded-full border-2 border-white dark:border-slate-900",
-                    conversation.online ? "bg-emerald-400" : "bg-slate-300 dark:bg-slate-600"
+                    conversation.online
+                      ? "bg-emerald-400"
+                      : "bg-slate-300 dark:bg-slate-600",
                   )}
                 />
               </div>
 
               <span className="min-w-0 flex-1">
                 <span className="flex items-center justify-between gap-2">
-                  <span className="truncate text-[15px] font-medium">{conversation.name}</span>
+                  <span className="truncate text-[15px] font-medium">
+                    {conversation.name}
+                  </span>
                   <span className="shrink-0 text-xs text-muted-foreground">
                     {conversation.lastMessageAt}
                   </span>

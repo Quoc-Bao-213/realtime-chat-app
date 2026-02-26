@@ -1,6 +1,7 @@
 "use client";
 
 import { io, type Socket } from "socket.io-client";
+import { usePathname, useRouter } from "next/navigation";
 import {
   createContext,
   useCallback,
@@ -10,7 +11,11 @@ import {
   useRef,
   useState,
 } from "react";
-import type { ChatMessage, Conversation, SearchUser } from "@/modules/chat/ui/types";
+import type {
+  ChatMessage,
+  Conversation,
+  SearchUser,
+} from "@/modules/chat/ui/types";
 
 type ServerMessage = {
   id: string;
@@ -36,6 +41,14 @@ type ChatContextValue = {
 };
 
 const ChatContext = createContext<ChatContextValue | null>(null);
+
+function extractConversationIdFromPath(pathname: string): string {
+  const parts = pathname.split("/").filter(Boolean);
+  if (parts[0] !== "chat") {
+    return "";
+  }
+  return parts[1] ?? "";
+}
 
 function toTimeLabel(iso: string): string {
   return new Date(iso).toLocaleTimeString([], {
@@ -109,12 +122,17 @@ type SendAck =
   | { ok: false; error?: string };
 
 export function ChatProvider({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const router = useRouter();
+  const initialConversationId = extractConversationIdFromPath(pathname);
   const [currentUserId, setCurrentUserId] = useState("");
   const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [activeConversationId, setActiveConversationId] = useState("");
+  const [activeConversationId, setActiveConversationId] = useState(
+    initialConversationId,
+  );
   const [draft, setDraft] = useState("");
   const socketRef = useRef<Socket | null>(null);
-  const activeConversationRef = useRef("");
+  const activeConversationRef = useRef(initialConversationId);
   const messagesFetchIdRef = useRef(0);
 
   const fetchConversations = useCallback(async () => {
@@ -141,10 +159,6 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     }));
 
     setConversations(mapped);
-    if (!activeConversationRef.current && mapped[0]) {
-      activeConversationRef.current = mapped[0].id;
-      setActiveConversationId(mapped[0].id);
-    }
   }, []);
 
   const fetchMessages = useCallback(async (conversationId: string) => {
@@ -183,16 +197,21 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
 
   const selectConversation = useCallback(
     (conversationId: string) => {
+      if (!conversationId) {
+        return;
+      }
+
       activeConversationRef.current = conversationId;
       setActiveConversationId(conversationId);
       void fetchMessages(conversationId);
+      router.push(`/chat/${conversationId}`);
 
       const socket = socketRef.current;
       if (socket) {
         socket.emit("join_conversation", conversationId);
       }
     },
-    [fetchMessages],
+    [fetchMessages, router],
   );
 
   const initSocket = useCallback(async () => {
@@ -235,15 +254,18 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       );
     });
 
-    socket.on("user_offline", ({ userId: offlineUserId }: { userId: string }) => {
-      setConversations((prev) =>
-        prev.map((conversation) =>
-          conversation.otherUserId === offlineUserId
-            ? { ...conversation, online: false }
-            : conversation,
-        ),
-      );
-    });
+    socket.on(
+      "user_offline",
+      ({ userId: offlineUserId }: { userId: string }) => {
+        setConversations((prev) =>
+          prev.map((conversation) =>
+            conversation.otherUserId === offlineUserId
+              ? { ...conversation, online: false }
+              : conversation,
+          ),
+        );
+      },
+    );
 
     const heartbeatInterval = window.setInterval(() => {
       socket.emit("heartbeat");
@@ -270,6 +292,9 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     const bootstrapTimer = window.setTimeout(() => {
       void fetchConversations();
       void initSocket();
+      if (activeConversationRef.current) {
+        void fetchMessages(activeConversationRef.current);
+      }
     }, 0);
 
     return () => {
@@ -365,14 +390,22 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   );
 
   const activeConversation = useMemo(
-    () => conversations.find((conversation) => conversation.id === activeConversationId),
+    () =>
+      conversations.find(
+        (conversation) => conversation.id === activeConversationId,
+      ),
     [conversations, activeConversationId],
   );
 
+  const stableActiveConversationId =
+    activeConversationId || initialConversationId;
+
   const contextValue = useMemo<ChatContextValue>(
     () => ({
-      conversations: conversations.map(({ messages, ...conversation }) => conversation),
-      activeConversationId,
+      conversations: conversations.map(
+        ({ messages, ...conversation }) => conversation,
+      ),
+      activeConversationId: stableActiveConversationId,
       activeMessages: activeConversation?.messages ?? [],
       draft,
       setDraft,
@@ -384,9 +417,9 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     }),
     [
       activeConversation,
-      activeConversationId,
       conversations,
       draft,
+      stableActiveConversationId,
       openConversationWithUser,
       searchUsers,
       selectConversation,
@@ -395,7 +428,9 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     ],
   );
 
-  return <ChatContext.Provider value={contextValue}>{children}</ChatContext.Provider>;
+  return (
+    <ChatContext.Provider value={contextValue}>{children}</ChatContext.Provider>
+  );
 }
 
 export function useChatContext() {

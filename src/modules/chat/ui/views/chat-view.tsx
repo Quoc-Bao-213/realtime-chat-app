@@ -31,13 +31,11 @@ export function ChatView() {
     (conversation) => conversation.id === activeConversationId,
   );
 
-  if (!activeConversation) return null;
-
   return (
     <section className="relative h-full overflow-hidden p-3 transition-all duration-200 sm:p-4">
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-secondary/42 via-background to-muted/30 dark:from-slate-800/35 dark:via-slate-900/70 dark:to-slate-950/82" />
-        <div className="absolute left-[22%] top-[6%] h-[28rem] w-[28rem] rounded-full bg-indigo-300/12 blur-3xl dark:bg-indigo-500/10" />
+        <div className="absolute inset-0 bg-linear-to-b from-secondary/42 via-background to-muted/30 dark:from-slate-800/35 dark:via-slate-900/70 dark:to-slate-950/82" />
+        <div className="absolute left-[22%] top-[6%] h-112 w-md rounded-full bg-indigo-300/12 blur-3xl dark:bg-indigo-500/10" />
         <div className="absolute right-[10%] top-[18%] h-80 w-80 rounded-full bg-cyan-300/10 blur-3xl dark:bg-cyan-600/9" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_22%_12%,rgba(148,163,184,0.15),transparent_52%)] dark:bg-[radial-gradient(circle_at_22%_12%,rgba(99,102,241,0.09),transparent_55%)]" />
       </div>
@@ -46,7 +44,7 @@ export function ChatView() {
         <div className="hidden w-80 shrink-0 md:block">
           <ChatSidebar
             conversations={conversations}
-            activeConversationId={activeConversation.id}
+            activeConversationId={activeConversationId}
             onSelectConversation={setActiveConversationId}
           />
         </div>
@@ -72,16 +70,38 @@ export function ChatView() {
                 </SheetHeader>
                 <ChatSidebar
                   conversations={conversations}
-                  activeConversationId={activeConversation.id}
+                  activeConversationId={activeConversationId}
                   onSelectConversation={setActiveConversationId}
                 />
               </SheetContent>
             </Sheet>
           </div>
 
-          <ChatHeader conversation={activeConversation} />
-          <MessageList messages={activeMessages} currentUserId={currentUserId} />
-          <MessageInput value={draft} onChange={setDraft} onSend={sendMessage} />
+          {activeConversation ? (
+            <>
+              <ChatHeader conversation={activeConversation} />
+              <MessageList
+                messages={activeMessages}
+                currentUserId={currentUserId}
+              />
+              <MessageInput
+                value={draft}
+                onChange={setDraft}
+                onSend={sendMessage}
+              />
+            </>
+          ) : (
+            <div className="flex flex-1 items-center justify-center px-6 text-center">
+              <div>
+                <h2 className="text-lg font-semibold text-foreground">
+                  No chat activity yet
+                </h2>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Search a user in the header and click to start a conversation.
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </section>

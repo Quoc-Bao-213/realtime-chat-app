@@ -13,7 +13,10 @@ import type { ChatSocketData } from "@/server/chat/types";
 
 type AuthedSocket = Socket<
   {
-    join_conversation: (conversationId: string, cb?: (payload: unknown) => void) => void;
+    join_conversation: (
+      conversationId: string,
+      cb?: (payload: unknown) => void,
+    ) => void;
     leave_conversation: (conversationId?: string) => void;
     send_message: (
       payload: { conversationId: string; content: string },
@@ -204,7 +207,11 @@ export function createChatSocketServer(httpServer: HttpServer): IOServer {
       }
 
       try {
-        const message = await createTextMessage(conversationId, userId, content);
+        const message = await createTextMessage(
+          conversationId,
+          userId,
+          content,
+        );
         io.to(conversationId).emit("receive_message", message);
         cb?.({ ok: true, message });
       } catch {

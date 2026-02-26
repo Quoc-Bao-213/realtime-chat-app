@@ -15,13 +15,15 @@ export function ChatHeader({ conversation }: ChatHeaderProps) {
       <div className="flex items-center gap-3">
         <div className="relative">
           <Avatar size="lg">
-            <AvatarFallback className="bg-gradient-to-br from-indigo-100 to-cyan-100 text-slate-700 dark:from-indigo-900/45 dark:to-cyan-900/35 dark:text-slate-200">
+            <AvatarFallback className="bg-linear-to-br from-indigo-100 to-cyan-100 text-slate-700 dark:from-indigo-900/45 dark:to-cyan-900/35 dark:text-slate-200">
               {conversation.avatar}
             </AvatarFallback>
           </Avatar>
           <span
             className={`absolute bottom-0 right-0 size-3 rounded-full border-2 border-white dark:border-slate-900 ${
-              conversation.online ? "bg-emerald-400" : "bg-slate-300 dark:bg-slate-600"
+              conversation.online
+                ? "bg-emerald-400"
+                : "bg-slate-300 dark:bg-slate-600"
             }`}
           />
         </div>

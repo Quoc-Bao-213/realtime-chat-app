@@ -55,17 +55,19 @@ export function AppHeader() {
   };
 
   useEffect(() => {
-    const trimmed = query.trim();
-    if (trimmed.length < 2) {
-      setResults([]);
-      setLoading(false);
-      return;
-    }
-
     let isCancelled = false;
-    setLoading(true);
+    const trimmed = query.trim();
 
     const timeout = window.setTimeout(async () => {
+      if (trimmed.length < 2) {
+        if (!isCancelled) {
+          setResults([]);
+          setLoading(false);
+        }
+        return;
+      }
+
+      setLoading(true);
       const users = await searchUsers(trimmed);
       if (!isCancelled) {
         setResults(users);
@@ -87,7 +89,7 @@ export function AppHeader() {
             href="/chat"
             className="flex items-center gap-2 rounded-lg px-1 py-1 text-foreground/95 transition-colors duration-200 hover:text-foreground"
           >
-            <span className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-100 to-cyan-100 text-slate-700 dark:from-indigo-900/45 dark:to-cyan-900/35 dark:text-slate-200">
+            <span className="flex size-8 items-center justify-center rounded-xl bg-linear-to-br from-indigo-100 to-cyan-100 text-slate-700 dark:from-indigo-900/45 dark:to-cyan-900/35 dark:text-slate-200">
               <MessageCircle className="size-4" />
             </span>
             <span className="hidden text-sm font-semibold tracking-tight sm:inline">
@@ -130,10 +132,14 @@ export function AppHeader() {
                     >
                       <Avatar className="size-8">
                         <AvatarImage src={result.imageUrl} alt={result.name} />
-                        <AvatarFallback>{getInitials(result.name)}</AvatarFallback>
+                        <AvatarFallback>
+                          {getInitials(result.name)}
+                        </AvatarFallback>
                       </Avatar>
                       <span className="min-w-0 flex-1">
-                        <span className="block truncate text-sm font-medium">{result.name}</span>
+                        <span className="block truncate text-sm font-medium">
+                          {result.name}
+                        </span>
                         <span className="block truncate text-xs text-muted-foreground">
                           {result.email}
                         </span>
@@ -141,7 +147,9 @@ export function AppHeader() {
                     </button>
                   ))
                 ) : (
-                  <div className="px-2 py-3 text-sm text-muted-foreground">No users found.</div>
+                  <div className="px-2 py-3 text-sm text-muted-foreground">
+                    No users found.
+                  </div>
                 )}
               </div>
             ) : null}
@@ -160,8 +168,11 @@ export function AppHeader() {
                 aria-label="Open account menu"
               >
                 <Avatar className="size-8">
-                  <AvatarImage src={user?.imageUrl} alt={user?.fullName ?? "User"} />
-                  <AvatarFallback className="bg-gradient-to-br from-indigo-100 to-cyan-100 text-[10px] text-slate-700 dark:from-indigo-900/45 dark:to-cyan-900/35 dark:text-slate-200">
+                  <AvatarImage
+                    src={user?.imageUrl}
+                    alt={user?.fullName ?? "User"}
+                  />
+                  <AvatarFallback className="bg-linear-to-br from-indigo-100 to-cyan-100 text-[10px] text-slate-700 dark:from-indigo-900/45 dark:to-cyan-900/35 dark:text-slate-200">
                     {getInitials(user?.fullName)}
                   </AvatarFallback>
                 </Avatar>

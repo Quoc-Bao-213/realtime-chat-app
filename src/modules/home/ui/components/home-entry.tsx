@@ -15,7 +15,7 @@ export const HomeEntry = async () => {
   return (
     <section className="relative flex min-h-screen items-center justify-center px-4 py-12 sm:px-6">
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-100/65 via-slate-100 to-cyan-100/55 dark:from-slate-900 dark:via-slate-950 dark:to-indigo-950/35" />
+        <div className="absolute inset-0 bg-linear-to-br from-indigo-100/65 via-slate-100 to-cyan-100/55 dark:from-slate-900 dark:via-slate-950 dark:to-indigo-950/35" />
         <div className="absolute left-1/2 top-[12%] h-72 w-72 -translate-x-1/2 rounded-full bg-indigo-300/30 blur-3xl dark:bg-indigo-700/20" />
         <div className="absolute bottom-[16%] left-[30%] h-64 w-64 rounded-full bg-cyan-300/25 blur-3xl dark:bg-cyan-700/20" />
       </div>
@@ -23,8 +23,11 @@ export const HomeEntry = async () => {
       <div className="w-full max-w-lg rounded-3xl border border-indigo-100/70 bg-white/70 p-6 shadow-xl shadow-indigo-200/55 backdrop-blur-xl transition-all duration-200 sm:p-8 dark:border-slate-700/70 dark:bg-slate-900/70 dark:shadow-slate-950/45">
         <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <span className="flex size-10 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-100 to-cyan-100 dark:from-indigo-900/60 dark:to-cyan-900/50">
-              <MessageCircle className="size-5 text-slate-700 dark:text-slate-100" aria-hidden="true" />
+            <span className="flex size-10 items-center justify-center rounded-2xl bg-linear-to-br from-indigo-100 to-cyan-100 dark:from-indigo-900/60 dark:to-cyan-900/50">
+              <MessageCircle
+                className="size-5 text-slate-700 dark:text-slate-100"
+                aria-hidden="true"
+              />
             </span>
             <span className="text-base font-semibold tracking-tight text-slate-800 dark:text-slate-100">
               {BRAND_NAME}
@@ -44,7 +47,7 @@ export const HomeEntry = async () => {
           <Button
             asChild
             size="lg"
-            className="flex-1 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 text-white shadow-md transition-all duration-200 hover:brightness-105 hover:shadow-lg dark:from-indigo-500 dark:to-cyan-500"
+            className="flex-1 rounded-xl bg-linear-to-r from-indigo-500 to-violet-500 text-white shadow-md transition-all duration-200 hover:brightness-105 hover:shadow-lg dark:from-indigo-500 dark:to-cyan-500"
           >
             <Link href={primaryHref}>{primaryLabel}</Link>
           </Button>

@@ -32,7 +32,7 @@ export function MessageList({ messages, currentUserId }: MessageListProps) {
                   "max-w-[80%] rounded-2xl px-4 py-2.5",
                   isMine
                     ? "bg-indigo-200/58 text-slate-800 shadow-sm dark:bg-indigo-800/36 dark:text-slate-100"
-                    : "bg-card/92 text-slate-700 shadow-sm dark:bg-slate-800/58 dark:text-slate-200"
+                    : "bg-card/92 text-slate-700 shadow-sm dark:bg-slate-800/58 dark:text-slate-200",
                 )}
               >
                 <p className="text-[15px] leading-relaxed">{message.content}</p>
@@ -41,7 +41,7 @@ export function MessageList({ messages, currentUserId }: MessageListProps) {
                     "mt-1 text-[11px]",
                     isMine
                       ? "text-indigo-600/80 dark:text-indigo-300/80"
-                      : "text-slate-500 dark:text-slate-400"
+                      : "text-slate-500 dark:text-slate-400",
                   )}
                 >
                   {new Date(message.createdAt).toLocaleTimeString([], {

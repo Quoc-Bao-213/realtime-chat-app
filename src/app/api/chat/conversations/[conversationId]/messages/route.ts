@@ -48,7 +48,10 @@ export async function POST(req: Request, { params }: Params) {
   const content = body.content?.trim();
 
   if (!content) {
-    return NextResponse.json({ error: "Message content is required" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Message content is required" },
+      { status: 400 },
+    );
   }
 
   const isMember = await isConversationParticipant(conversationId, user.id);

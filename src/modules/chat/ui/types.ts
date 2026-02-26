@@ -23,4 +23,3 @@ export interface SearchUser {
   email: string;
   imageUrl: string;
 }
-

@@ -10,7 +10,9 @@ import type { ChatMessagePayload } from "@/server/chat/types";
 const DEFAULT_MESSAGE_LIMIT = 50;
 const MAX_SEARCH_LIMIT = 20;
 
-function mapMessageToPayload(message: typeof messages.$inferSelect): ChatMessagePayload {
+function mapMessageToPayload(
+  message: typeof messages.$inferSelect,
+): ChatMessagePayload {
   return {
     id: message.id,
     conversationId: message.conversationId,

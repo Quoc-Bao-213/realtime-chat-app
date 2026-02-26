@@ -21,7 +21,8 @@ export async function POST(req: NextRequest) {
 
       await db.insert(users).values({
         clerkId: data.id,
-        name: `${data.first_name ?? ""} ${data.last_name ?? ""}`.trim() || "User",
+        name:
+          `${data.first_name ?? ""} ${data.last_name ?? ""}`.trim() || "User",
         imageUrl: data.image_url,
         email: primaryEmail,
       });
@@ -58,7 +59,8 @@ export async function POST(req: NextRequest) {
       await db
         .update(users)
         .set({
-          name: `${data.first_name ?? ""} ${data.last_name ?? ""}`.trim() || "User",
+          name:
+            `${data.first_name ?? ""} ${data.last_name ?? ""}`.trim() || "User",
           imageUrl: data.image_url,
           email: primaryEmail,
         })

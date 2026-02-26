@@ -33,10 +33,16 @@ export async function POST(req: Request) {
 
   const targetUser = await getDbUserById(targetUserId);
   if (!targetUser) {
-    return NextResponse.json({ error: "Target user not found" }, { status: 404 });
+    return NextResponse.json(
+      { error: "Target user not found" },
+      { status: 404 },
+    );
   }
 
-  const conversation = await getOrCreateDirectConversation(user.id, targetUserId);
+  const conversation = await getOrCreateDirectConversation(
+    user.id,
+    targetUserId,
+  );
 
   return NextResponse.json({
     conversation: {
